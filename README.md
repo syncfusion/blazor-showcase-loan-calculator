@@ -16,6 +16,5 @@ The [Syncfusion Blazor Loan Calculator](https://blazor.syncfusion.com/showcase/w
 3. Build and run the application.
 4. Access the loan calculator through your web browser.
 5. Enter the loan amount, interest rate, and loan term.
-6. Click the "Calculate" button to obtain the loan payment, amortization schedule, and other relevant information.
 7. Explore different scenarios by adjusting the loan parameters and analyzing the updated results.
 

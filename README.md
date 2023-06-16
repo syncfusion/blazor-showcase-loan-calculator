@@ -12,7 +12,7 @@ The [Syncfusion Blazor Loan Calculator](https://blazor.syncfusion.com/showcase/w
 ## Usage
 
 1. Clone the repository to your local machine.
-2. Open the solution in your preferred development environment.
+2. Open the project `LoanCalculator.csproj` file in your preferred development environment.
 3. Build and run the application.
 4. Access the loan calculator through your web browser.
 5. Enter the loan amount, interest rate, and loan term.

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Syncfusion Blazor Loan Calculator to easily calculate loan payments, interest rates, and amortization schedules. Determine the total cost of your loan and plan your repayment strategy. This interactive calculator provides accurate results based on your loan amount, interest rate, and loan term.">
+    <meta name="keywords" content="blazor loancalculator, syncfusion loancalculator, wasm loancalculator, loan-calculator, online loan-calculator, online loancalculator, loancalculator">
+    <meta name="author" content="Syncfusion">
+    <title>Syncfusion Blazor Loan Calculator | Calculate Loan Payments, Interest, and Amortization</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link id="theme-link" href="https://cdn.syncfusion.com/blazor/21.2.10/styles/tailwind.css" rel="stylesheet" />
+    <link href="css/IndexDark.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+</head>
+
+<body class="light">
+    <div id="app">
+        <div class="loading-body-overlay">
+            <div id="loader" class="loan-calculator-loading">
+                <svg class="circular" height="40" width="40">
+                    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10"></circle>
+                </svg>
+            </div>
+            <div class="loading-caption">
+                <h4 class="my-4" id="Loading-Text">Loading Loan Calculator...</h4>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script src="https://cdn.syncfusion.com/blazor/21.2.10/syncfusion-blazor.min.js"></script>
+    <script >
+        
+
+        function ChangeStyleSheet() {
+            const body = document.getElementsByTagName('body');
+            const link = document.getElementById('theme-link');
+            const styleSheet = body[0].className == "light" ? 'tailwind' : 'tailwind-dark';
+            link.setAttribute('href', `https://cdn.syncfusion.com/blazor/21.2.10/styles/${styleSheet}.css`);
+        }
+
+        function toggleTheme(theme) {
+            var bodyElement = document.body
+            if (bodyElement.classList.contains('light'))
+                bodyElement.classList.remove('light');
+            if (bodyElement.classList.contains('dark'))
+                bodyElement.classList.remove('dark');
+            var selectedTheme = theme === "Dark" ? "dark" : "light";
+            bodyElement.classList.add(selectedTheme);
+            ChangeStyleSheet();
+        }
+
+        function getViewportWidth(){
+            return window.innerWidth;
+        }
+
+        function addResizeListener(dotNetObjectRef) {
+            setTimeout(
+            window.addEventListener('resize', function () {
+                    dotNetObjectRef.invokeMethodAsync('OnWindowResized', window.innerWidth);
+            }),2000);
+        }
+
+    </script>
+</body>
+
+</html>

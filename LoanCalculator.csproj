@@ -14,7 +14,6 @@
     <PackageReference Include="Syncfusion.Blazor.Buttons" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Calendars" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Charts" Version="23.1.36" />
-    <PackageReference Include="Syncfusion.Blazor.Core" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Grid" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Inputs" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="23.1.36" />

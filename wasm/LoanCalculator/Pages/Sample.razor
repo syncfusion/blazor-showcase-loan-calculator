@@ -1,0 +1,29 @@
+﻿@page "/sample"
+@inject IJSRuntime JsRuntime
+
+<h1>Window Dimensions</h1>
+
+<button class="btn btn-primary" @onclick="OnButtonClick">Get Dimensions</button><br /><br />
+
+<p>Window Height: @Height</p>
+<p>Window Width: @Width</p>
+
+@code {
+
+    public int Height { get; set; }
+    public int Width { get; set; }
+
+    private async Task OnButtonClick()
+    {
+        var dimension = await JsRuntime.InvokeAsync<WindowDimension>("getWindowDimensions");
+        Height = dimension.Height;
+        Width = dimension.Width;
+    }
+
+    public class WindowDimension
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
+}

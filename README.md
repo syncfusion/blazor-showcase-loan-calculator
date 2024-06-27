@@ -4,7 +4,8 @@ The [Syncfusion Blazor Loan Calculator](https://blazor.syncfusion.com/showcase/w
 
 ## Prerequisites
 
-- Latest .NET 7 SDK
+- [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - Visual Studio 2022 / Visual Studio 2019
 - Visual Studio Code
 - JetBrains Rider

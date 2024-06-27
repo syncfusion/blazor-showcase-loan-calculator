@@ -78,13 +78,14 @@
                         <div class="editor-space">
                             <p class="content-label content-label-progress">Select loan amount</p>
                                 <div class="numeric-box-container">
-                                <SfNumericTextBox TValue="double" Min="1000" @bind-Value="@Calculation.PrincipalAmount" Format="c2" Max="500000" Step="10000" Width="inherit" StrictMode="true">
+                                <SfNumericTextBox TValue="double" Min="1" @bind-Value="@Calculation.PrincipalAmount" Format="c2" Max="500000" Step="10000" Width="inherit" StrictMode="true">
                                     <NumericTextBoxEvents TValue="double" ValueChange="OnPrincipalTextChange"></NumericTextBoxEvents>
                                 </SfNumericTextBox>
                             </div>
                         </div>
 
                         <SfSlider TValue=double Min="0" Max="500000" Type="SliderType.MinRange" @bind-Value="@Calculation.PrincipalAmount" Step="10000">
+                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
                             <SliderEvents TValue=double ValueChange="@OnChangeOfPrincipal" TicksRendering=@OnRenderingTickLabel></SliderEvents>
                             <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="100000" SmallStep="10000"></SliderTicks>
                             <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always" Format="C2"></SliderTooltip>
@@ -102,6 +103,7 @@
                         </div>
                         </div>
                         <SfSlider TValue=double Min="0" Max="50" Type="SliderType.MinRange" @bind-Value=@Calculation.Interest Step="0.25">
+                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
                             <SliderEvents TValue=double ValueChange="@OnChangeOfInterest"></SliderEvents>
                             <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="10" SmallStep="1"></SliderTicks>
                                 <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
@@ -336,7 +338,7 @@
 
     public void Refresh()
     {
-        NormalChart.RefreshAsync();
+        NormalChart?.RefreshAsync();
     }
 
     AccumulationChart? PieChart = new AccumulationChart();
@@ -560,18 +562,25 @@
 
     public void ChartComponent()
     {
+        var interestPercentage = Math.Round(AmortizationSchedule.InterestRate) * 100 / (Calculation.PrincipalAmount + Math.Round(AmortizationSchedule.InterestRate));
+        interestPercentage = double.IsNaN(interestPercentage) ? 0 :  Math.Round(interestPercentage);
+        var pricipalPercentage = Math.Round(Calculation.PrincipalAmount) * 100 / (Calculation.PrincipalAmount + Math.Round(AmortizationSchedule.InterestRate));
+        pricipalPercentage = double.IsNaN(pricipalPercentage) ? 0 :  Math.Round(pricipalPercentage);
         AmortizationChart.ChartData.Add(
-           new AmortizationChart()
-               {
-                   XValue = Calculation.PrincipalAmount,
-                   YValue = Calculation.PrincipalAmount,
-               });
+        new AmortizationChart()
+            {
+                XValue = Calculation.PrincipalAmount,
+                YValue = Calculation.PrincipalAmount,
+                Percentage = pricipalPercentage,
+            });
         AmortizationChart.ChartData.Add(
-             new AmortizationChart()
-                 {
-                     XValue = AmortizationSchedule.InterestRate,
-                     YValue = AmortizationSchedule.InterestRate,
-                 });
+        new AmortizationChart()
+            {
+                XValue = AmortizationSchedule.InterestRate,
+                YValue = AmortizationSchedule.InterestRate,
+                Percentage = interestPercentage,
+            });
+
     }
 
 
@@ -585,6 +594,7 @@
         AmortizationSchedule.GridData.Clear();
         AmortizationChart.ChartData.Clear();
         AmortizationSchedule.DateObj = DateTime.Today;
+        PieChart?.Refresh();
     }
 
     ///<summary>
@@ -593,10 +603,10 @@
 
     public void RefreshUI()
     {
-        GridObj.CalculateValues();
+        GridObj?.CalculateValues();
         ChartComponent();
-        GridObj.Refresh();
-        PieChart.Refresh();
+        GridObj?.Refresh();
+        PieChart?.Refresh();
         Refresh();
     }
     ///<summary>
@@ -632,7 +642,7 @@
     {
 
         LoanPrincipleAmount = Calculation.PrincipalAmount;
-        GridObj.CalculateValues();
+        GridObj?.CalculateValues();
         ChartComponent();
    
 

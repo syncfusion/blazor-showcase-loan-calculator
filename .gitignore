@@ -1,7 +1,4 @@
 .vs/
 .git/
-bin/
-obj/
-LoanCalculator.csproj.user
-LoanCalculator.sln
-Properties/PublishProfiles/
+**/bin/
+**/obj

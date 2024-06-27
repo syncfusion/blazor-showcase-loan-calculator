@@ -179,7 +179,7 @@
                 AmortizationSchedule.GridData[i].TotalAmount = GridObject.TotalAmount + AmortizationSchedule.GridData[i].emi;
 
             }
-            if (i > 0 || i == GridObject.tent - 1)
+            if (i > 0)
             {
 
                 AmortizationSchedule.GridData[i].TotalInterest = AmortizationSchedule.GridData[i - 1].TotalInterest + AmortizationSchedule.GridData[i].MonthlyInterest;

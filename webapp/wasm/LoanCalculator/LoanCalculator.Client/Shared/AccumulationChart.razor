@@ -1,0 +1,94 @@
+﻿@using LoanCalculator.Models;
+<SfAccumulationChart EnableSmartLabels="false" EnableBorderOnMouseMove="false" Height="296px" Width="100%" Background="@bgcolor" @ref="RenderChart">
+    <AccumulationChartLegendSettings Visible="false"></AccumulationChartLegendSettings>
+    <AccumulationChartEvents OnPointRender=payment_pieChartPointRender></AccumulationChartEvents>
+    <AccumulationChartTooltipSettings Enable="false" Format="Percentage: <b>${point.y}% </b>"></AccumulationChartTooltipSettings>
+    
+    <AccumulationChartSeriesCollection>
+        <AccumulationChartSeries DataSource="@AmortizationChart.ChartData" Radius="100%" XName="Percentage" Name="Percentage" YName="Percentage" StartAngle="0" EndAngle="360" InnerRadius="80%" Explode="false">         
+            <AccumulationChartAnimation Enable="false" Delay="0.05"></AccumulationChartAnimation>
+        </AccumulationChartSeries>
+    </AccumulationChartSeriesCollection>
+
+    <AccumulationChartAnnotations>
+        <AccumulationChartAnnotation X="50%" Y="50%" CoordinateUnits="Units.Pixel" Region="Regions.Chart" >
+            <ContentTemplate>
+                <div class="donut-text-title content-label">Total Amount Payable</div>
+                <div class="donut-text-value content-label-text">$@String.Format("{0:n0}",Math.Round(AmortizationSchedule.MonthlyPayment))</div>
+            </ContentTemplate>
+        </AccumulationChartAnnotation>
+    </AccumulationChartAnnotations>
+
+</SfAccumulationChart>
+<style>
+    .donut-text-title{
+        font-size:14px;
+        font-family:'Inter';
+        font-weight:500;
+        line-height:18px;
+        text-align:center;
+        width: max-content;
+    }
+
+    .donut-text-value {
+        font-size: 24px;
+        font-family: 'Inter';
+        font-weight:600;
+        line-height: 30px;
+        text-align:center;
+    }
+
+</style>
+
+@code
+{
+    [Parameter]
+    public string bgcolor { get; set; } = "#FFFFFF";
+
+    [Parameter]
+    public string currentTheme { get; set; } = "Light";
+
+    SfAccumulationChart? RenderChart = new SfAccumulationChart();
+
+    ///<summary>
+    /// this event styles the pie-chart with custom css and svg
+    ///</summary>
+
+    public void payment_pieChartPointRender(AccumulationPointRenderEventArgs args)
+    {
+        if (args.Point.Index != 0)
+        {
+            args.Border.Width = 1;
+            if (currentTheme.Equals("Dark"))
+            {
+                args.Fill = "#E2D56E";
+            }
+            else
+            {
+                args.Fill = "#FF692D";
+            }
+        }
+        else
+        {
+            args.Border.Width = 1;
+            if (currentTheme.Equals("Dark"))
+            {
+                args.Fill = "#8A69F4";
+            }
+            else
+            {
+                args.Fill = "#4FD5FA";
+            }
+        }
+    }
+
+    ///<summary>
+    /// this event Refresh the chart if input changes
+    ///</summary>
+    ///
+    public void Refresh()
+    {
+        RenderChart?.Refresh();
+    }
+
+}

@@ -4,6 +4,7 @@
     {
         public double XValue { get; set; }
         public double YValue { get; set; }
+        public double Percentage { get; set; }
 
         public static List<AmortizationChart> ChartData = new List<AmortizationChart>();
     }

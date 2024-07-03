@@ -1,4 +1,4 @@
-![image](https://github.com/BharatRamsf3693/blazor-showcase-loan-calculator/assets/103921986/c88acdb0-107a-4b6c-99a6-20c6d2144ba0)# Syncfusion Blazor Loan Calculator
+# Syncfusion Blazor Loan Calculator
 
 The [Syncfusion Blazor Loan Calculator](https://blazor.syncfusion.com/showcase/wasm/loan-calculator) is a powerful and user-friendly web application that allows you to calculate loan payments, interest rates, and amortization schedules. Whether you are planning for a personal loan or analyzing business financing options, this calculator provides accurate results and helps you make informed financial decisions.
 

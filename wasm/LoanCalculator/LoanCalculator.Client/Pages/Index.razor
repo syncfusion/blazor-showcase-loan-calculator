@@ -1,0 +1,713 @@
+﻿@page "/"
+@using Syncfusion.Blazor.Data;
+@using Syncfusion.Blazor.SplitButtons;
+@using Syncfusion.Blazor.Buttons;
+@using LoanCalculator.Models;
+@using LoanCalculator.Client.Shared;
+@implements IDisposable
+
+@inject IJSRuntime IJSRuntime
+<div class="body-content">
+    @if (themeSwitched)
+    {
+        <div class="loading-body-overlay">
+            <div id="loader" class="loan-calculator-loading">
+                <svg class="circular" height="40" width="40">
+                    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="6" stroke-miterlimit="10"></circle>
+                </svg>
+            </div>    
+        </div>
+    }
+    @*Header*@
+    <div class="header">
+        <div >    
+            <svg id="loan-calculator" width="22" height="26" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="22" height="26" fill="none" />
+                <g id="Dark Theme">
+                    <rect width="1366" height="1920" transform="translate(-29 -15)" fill="transparent" />
+                    <rect id="Rectangle 1268" x="-29" y="-15" width="1366" height="56" fill="transparent" />
+                    <g id="Frame" clip-path="url(#clip0_0_1)" stroke="currentColor">
+                        <path id="Vector" d="M17 5H5V11H17V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path id="Vector_2" d="M21 24V2C21 1.44772 20.5523 1 20 1L2 1C1.44772 1 1 1.44772 1 2V24C1 24.5523 1.44772 25 2 25H20C20.5523 25 21 24.5523 21 24Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path id="Vector_3" d="M6 16.5C6.55228 16.5 7 16.0523 7 15.5C7 14.9477 6.55228 14.5 6 14.5C5.44772 14.5 5 14.9477 5 15.5C5 16.0523 5.44772 16.5 6 16.5Z" fill="currentColor" />
+                        <path id="Vector_4" d="M11 16.5C11.5523 16.5 12 16.0523 12 15.5C12 14.9477 11.5523 14.5 11 14.5C10.4477 14.5 10 14.9477 10 15.5C10 16.0523 10.4477 16.5 11 16.5Z" fill="currentColor" />
+                        <path id="Vector_5" d="M16 16.5C16.5523 16.5 17 16.0523 17 15.5C17 14.9477 16.5523 14.5 16 14.5C15.4477 14.5 15 14.9477 15 15.5C15 16.0523 15.4477 16.5 16 16.5Z" fill="currentColor" />
+                        <path id="Vector_6" d="M6 21.5C6.55228 21.5 7 21.0523 7 20.5C7 19.9477 6.55228 19.5 6 19.5C5.44772 19.5 5 19.9477 5 20.5C5 21.0523 5.44772 21.5 6 21.5Z" fill="currentColor" />
+                         <path id="Vector_7" d="M11 21.5C11.5523 21.5 12 21.0523 12 20.5C12 19.9477 11.5523 19.5 11 19.5C10.4477 19.5 10 19.9477 10 20.5C10 21.0523 10.4477 21.5 11 21.5Z" fill="currentColor" />
+                        <path id="Vector_8" d="M16 21.5C16.5523 21.5 17 21.0523 17 20.5C17 19.9477 16.5523 19.5 16 19.5C15.4477 19.5 15 19.9477 15 20.5C15 21.0523 15.4477 21.5 16 21.5Z" fill="currentColor" />
+                    </g>
+                </g>
+                <defs>
+                    <clipPath id="clip0_0_1">
+                        <rect width="32" height="32" fill="white" transform="translate(-5 -3)" />
+                    </clipPath>
+                </defs>
+            </svg>
+        </div>
+        <span class="header-text">Loan Calculator</span>
+        <div class="theme-switching">
+            @if (viewportWidth < 450)
+            {
+                <SfDropDownButton IconCss="@iconTheme" @bind-value="@themeState" CssClass="theme-dropdown-btn">
+                    <DropDownButtonEvents ItemSelected="ItemSelected"></DropDownButtonEvents>
+                    <DropDownMenuItems>
+                        <DropDownMenuItem IconCss="e-icons e-dark" Text="Dark" Id="Dark"></DropDownMenuItem>
+                        <DropDownMenuItem IconCss="e-icons e-light" Text="Light" Id="Light"></DropDownMenuItem>
+                    </DropDownMenuItems>
+                </SfDropDownButton>
+            }
+            else
+            {
+                <SfDropDownButton IconCss="@iconTheme" @bind-value="@themeState" CssClass="theme-dropdown-btn" Content="@themeState">
+                    <DropDownButtonEvents ItemSelected="ItemSelected"></DropDownButtonEvents>
+                    <DropDownMenuItems>
+                        <DropDownMenuItem IconCss="e-icons e-dark" Text="Dark" Id="Dark"></DropDownMenuItem>
+                        <DropDownMenuItem IconCss="e-icons e-light" Text="Light" Id="Light"></DropDownMenuItem>
+                    </DropDownMenuItems>
+                </SfDropDownButton>
+            }            
+        </div>
+
+    </div>
+    @*top content*@
+    <div class="top-content">
+        @*  SfTextBox and SfSlider*@
+        <div class="row">
+            <div class="col-lg-6 encloser">
+                <div class="progress-bar-container">
+                <div class="row content-space">
+                    <div class="col-lg-12">
+                        <div class="editor-space">
+                            <p class="content-label content-label-progress">Select loan amount</p>
+                                <div class="numeric-box-container">
+                                <SfNumericTextBox TValue="double" Min="1" @bind-Value="@Calculation.PrincipalAmount" Format="c2" Max="500000" Step="10000" Width="inherit" StrictMode="true">
+                                    <NumericTextBoxEvents TValue="double" ValueChange="OnPrincipalTextChange"></NumericTextBoxEvents>
+                                </SfNumericTextBox>
+                            </div>
+                        </div>
+
+                        <SfSlider TValue=double Min="0" Max="500000" Type="SliderType.MinRange" @bind-Value="@Calculation.PrincipalAmount" Step="10000">
+                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
+                            <SliderEvents TValue=double ValueChange="@OnChangeOfPrincipal" TicksRendering=@OnRenderingTickLabel></SliderEvents>
+                            <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="100000" SmallStep="10000"></SliderTicks>
+                            <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always" Format="C2"></SliderTooltip>
+                        </SfSlider>
+                    </div>
+                </div>
+                <div class="row content-space">
+                    <div class="col-lg-12">
+                        <div class="editor-space">
+                        <p class="content-label content-label-progress">Rate of interest</p>
+                        <div class="numeric-box-container">
+                            <SfNumericTextBox TValue="double" Min="1" Value="@Calculation.Interest" Format="#0.## ' %'" Max="50" Step="0.25" Width="inherit" StrictMode="true">
+                                <NumericTextBoxEvents TValue="double" ValueChange="@OnInterestTextChange"></NumericTextBoxEvents>
+                            </SfNumericTextBox>
+                        </div>
+                        </div>
+                        <SfSlider TValue=double Min="0" Max="50" Type="SliderType.MinRange" @bind-Value=@Calculation.Interest Step="0.25">
+                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
+                            <SliderEvents TValue=double ValueChange="@OnChangeOfInterest"></SliderEvents>
+                            <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="10" SmallStep="1"></SliderTicks>
+                                <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
+                        </SfSlider>
+                    </div>
+                </div>
+                <div class="row content-space">
+                    <div class="col-lg-12">
+                            <div class="editor-space">
+                                <p class="content-label content-label-progress">Loan Tenure</p>
+                                <div>                                        
+                                    <div class="row g-0 ">
+                                        <div class="col">
+                                            <SfNumericTextBox TValue="int" Min="@NumericBox[0]" Value="@Calculation.LoanTermValue" Format="##" Max="@NumericBox[1]" Step="@NumericBox[2]" Width="100px" StrictMode="true" ShowSpinButton="false" CssClass="tenure-box">
+                                                <NumericTextBoxEvents TValue="int" ValueChange="@OnLoanTenureTextChange"></NumericTextBoxEvents>
+                                            </SfNumericTextBox>
+                                        </div>
+                                        @if (viewportWidth > 450)
+                                        {
+                                            <div class="col-6">
+                                                <SfDropDownButton  @bind-value="@grid.CheckedValue" Content="@grid.CheckedValue" CssClass="tenure-dropdown">
+                                                    <DropDownButtonEvents ItemSelected="OnDropdownButtonChange"></DropDownButtonEvents>
+                                                    <DropDownMenuItems>
+                                                        <DropDownMenuItem Text="Year"></DropDownMenuItem>
+                                                        <DropDownMenuItem Text="Month"></DropDownMenuItem>
+                                                    </DropDownMenuItems>
+                                                </SfDropDownButton>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-6" style="display:flex; justify-content: end;">
+                                                <SfButton @ref="yearButton" CssClass="tenure-dropdown-btn custom-btn-1" @onclick="@(()=>onButtonClick("Year"))" Content="Year" ></SfButton>
+                                            
+                                                <SfButton @ref="monthButton" CssClass="tenure-dropdown-btn custom-btn-2" @onclick="@(()=>onButtonClick("Month"))" Content=" Month" ></SfButton>
+                                            </div>                                           
+                                        }
+
+                                    </div>                                        
+                                </div>
+                        </div>
+                        @if (grid.CheckedValue == "Year")
+                        {
+                            <SfSlider TValue=int Min="0" Max="40" Value="@Calculation.LoanTermValue" Type="SliderType.MinRange" Step="1" >
+                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
+                                <SliderEvents TValue=int  ValueChange="@OnTermValueChanged"></SliderEvents>
+                                <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="10" SmallStep="1"></SliderTicks>
+                                  <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
+                            </SfSlider>
+                        }
+                        else
+                        {
+                            <SfSlider TValue=int Min="0" Max="480" @bind-Value="@Calculation.LoanTermValue" Type="SliderType.MinRange" Step="12">
+                                <SliderLimits Enabled="true" MinStart="12"></SliderLimits>
+                                <SliderEvents TValue=int ValueChange="@OnMonthTermChanged"></SliderEvents>
+                                <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="120" SmallStep="12"></SliderTicks>
+                                <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
+                            </SfSlider>
+                        }
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="col-lg-6 encloser">
+                <div class="pie-chart-container">
+                <div class="row">
+                    <div class="col-lg-12 emi-content">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                @* Sf Pie-Chart*@
+                                    <AccumulationChart @ref=PieChart bgcolor="@dynamicColor" currentTheme="@themeState"></AccumulationChart>
+                            </div>
+                            <div class="col-lg-4 pie-contentlabel">
+                                <div>
+                                    <p class="content-label"><span class="pie-icon pie-principal"></span>Principal Amount</p>
+                                    <h5 class="content-label-text">$@String.Format("{0:n0}", LoanPrincipleAmount) </h5>
+                                </div>
+                                <div>
+                                    <p class="content-label"><span class="pie-icon pie-interest"></span>Total Interest</p>
+                                    <h5 class="content-label-text">$@String.Format("{0:n0}",Math.Round(AmortizationSchedule.InterestRate))</h5>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+                <div class="pie-footer">
+                    <h6 class="content-label">Your Monthly Payment</h6>
+                    <h1 class="content-label-text">$@String.Format("{0:n2}",AmortizationSchedule.EMI)</h1>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @*Sf-Datepicker*@
+    <div class="date-picker">
+        <div class="row" style="text-align:center">
+            <div class="col-12 Calendar-style">
+                <div class="date-picker-encloser">
+                    <div class="date-picker-text">
+                        <div class="date-picker-title ">Your Repayment Details</div>
+                        <div class="date-picker-subtitle content-label">Your debt repayment schedule in regular instalments over a period of time.</div>
+                    </div>
+                    <div class="date-container">
+                        <SfDatePicker  TValue="DateTime" Min='@MinDate'Start='CalendarView.Year' Depth='CalendarView.Year' Placeholder="Enter Date" Format="MMM yyy" ShowClearButton="false" Width="100%"  @bind-Value="calculator.DateValue" StrictMode="true" ShowTodayButton="false" CssClass="e-custom-class">
+                            <DatePickerEvents TValue="DateTime" ValueChange=@OnDateValueChange></DatePickerEvents>
+                        </SfDatePicker>
+                        
+                    </div>
+                </div>
+                   @*  Sf-Chart*@
+                <div class="chart graph-container">
+                    <SfChart DataSource="@AmortizationSchedule.YearWiseData" EnableSideBySidePlacement="false" Height="500px" UseGroupingSeparator="true" Background="@dynamicColor" @ref="NormalChart" Palettes=@Palettes>
+                        <ChartEvents OnAxisLabelRender=PaymentGraphAxisLabelRender SizeChanged=ChartResize></ChartEvents>
+                        <ChartComponent currentTheme="@themeState" @ref="ChartObj"></ChartComponent>
+                    </SfChart>
+                </div>
+                @* Sf-Grid*@
+                <div class="chart">
+                    @if (AmortizationSchedule.YearWiseData.Count > 0 && AmortizationSchedule.GridData.Count > 0)
+                    {
+                        <DataGridComponent @ref="GridObj"></DataGridComponent>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<style>
+    /*drop down customization*/
+    .e-dropdown-btn .e-caret::before, .e-dropdown-btn.e-btn .e-caret::before {
+        content: '\e729';
+    }
+
+    body.dark ul.e-dropdown-menu{
+        background-color: #374151;
+    }
+
+    body.light ul.e-dropdown-menu {
+        background-color:#FFFFFF;
+    }
+
+    body.dark .e-grid [aria-selected] + tr .e-detailindentcell {
+        border-width: 0px !important;
+        background: #1F2937;
+    }
+
+    body.light .e-grid [aria-selected] + tr .e-detailindentcell {
+        border-width: 0px !important;
+        background: #F3F4F6;
+    }
+
+    body.light .e-grid,body.dark .e-grid{
+        border-style:none none solid;
+    }
+
+    .e-grid .e-detailcell {
+        border-width: 0px !important;
+        padding: 0 !important;
+    }
+
+    body.dark .e-grid .EvenRow, body.dark .e-grid .OddRow {
+        border: none;
+        border-bottom-color: #4B5563;
+        border-top-color: #4b5563;
+    }
+
+    body.light .e-grid .EvenRow, body.light .e-grid .OddRow {
+        border: none;
+        border-bottom-color: #E5E7EB;
+        border-top-color: #E5E7EB;
+    }
+
+    body .e-grid .e-detailrowcollapse, body .e-grid .e-detailrowexpand {
+        border-color: inherit;
+    }
+
+    .theme-dropdown-btn {
+        height: 30px;
+    }
+
+    .tenure-dropdown{
+        width: 100px;
+        border-radius: 0 4px 4px 0px;
+    }
+
+    .custom-btn-1{
+        border-right-width:0px;
+        border-top-right-radius:0px;
+        border-bottom-right-radius:0px;
+
+    }
+
+    .custom-btn-2 {
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
+
+</style>
+
+@code
+{
+    private int viewportWidth;
+
+    SfButton? yearButton;
+
+    SfButton? monthButton;
+
+    public string oldTheme { get; set; } = "Light";
+
+    public DateTime MinDate { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); 
+
+    public SfChart? NormalChart = new SfChart();
+
+    public int Height { get; set; }
+
+    public int Width { get; set; }
+
+    public string? GetWindowWidth { get; set; }
+
+    public bool AxisLabelFlag { get; set; } = false;
+
+    public string[] Palettes = { "#4FD5FA", "#FF692D", "#4F46E5" };
+
+    public string themeState { get; set; } = "Light";
+
+    public int[] NumericBox = { 0, 40, 1 };
+
+    public string iconTheme { get; set; } = "e-icons e-light";
+
+    public void Refresh()
+    {
+        NormalChart?.RefreshAsync();
+    }
+
+    AccumulationChart? PieChart = new AccumulationChart();
+
+    AmortizationSchedule grid = new AmortizationSchedule();
+
+    ChartComponent? ChartObj = new ChartComponent();
+
+    DataGridComponent? GridObj = new DataGridComponent();
+
+    Calculation calculator = new Calculation();
+
+    public EventCallback<double> InterestValueChanged { get; set; }
+
+    public EventCallback<int> PrincipalValueChanged { get; set; }
+
+    public EventCallback<int> LoanTermValueChanged { get; set; }
+
+    public double LoanPrincipleAmount { get; set; }
+
+    public double LoanInterestAmount{ get; set; }
+
+    public double[] Ticks = new double[] { 0, 100000, 200000, 300000, 400000, 500000 };
+
+    public string dynamicColor { get; set; } = "#FFFFFF";
+
+    public bool themeSwitched { get; set; }
+
+    public static bool isMobileView { get; set; } = false;
+
+    public string oldTenure { get; set; } = "Year";
+
+    private async void ItemSelected(MenuEventArgs args)
+    {
+
+        if(args.Item.Id.Equals("Dark"))
+        {
+            dynamicColor = "#1F2937";
+            themeState = "Dark";
+            iconTheme = "e-icons e-dark";
+            Palettes = new string[] { "#8A69F4", "#E2D56E", "#FF804D" };
+        }
+        else
+        {
+            dynamicColor = "#FFFFFF";
+            themeState = "Light";
+            iconTheme = "e-icons e-light";
+            Palettes = new string[] { "#4FD5FA", "#FF692D", "#4F46E5" };
+        }
+        if (!args.Item.Id.Equals(oldTheme))
+        {
+            oldTheme = args.Item.Id;
+            themeSwitched = true;
+            await OnThemeChange(themeState);
+            PieChart.Refresh();
+            await Task.Delay(500);
+            themeSwitched = false;
+
+            StateHasChanged();
+            Refresh();
+        }
+    }
+    public async Task OnThemeChange(String themeState)
+    {
+        await IJSRuntime.InvokeVoidAsync("toggleTheme", themeState);
+    }
+
+    public async Task onButtonClick(string value)
+    {
+        if (!value.Equals(oldTenure))
+        {
+            Calculation.LoanTermValue = value.Equals("Month") ? Calculation.LoanTermValue * 12 : Calculation.LoanTermValue / 12;
+            NumericBox = value.Equals("Month") ? new int[] { 0, 480, 12 } : new int[] { 0, 40, 1 };
+            oldTenure = value;
+            if (value.Equals("Month"))
+            {
+                monthButton.IsPrimary = true;
+                yearButton.IsPrimary = false;
+            }
+            else
+            {
+                monthButton.IsPrimary = false;
+                yearButton.IsPrimary = true;
+            }
+        }
+        GridObj.Tenure = value;
+        grid.CheckedValue = value;
+        DestroyComponents();
+        RefreshUI();
+    }
+
+
+    ///<summary>
+    ///Function hits when Principal Input Text changed by user and Refreshes the UI
+    ///</summary>
+
+    public void OnPrincipalTextChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<double> args)
+    {
+        DestroyComponents();
+        Calculation.PrincipalAmount = (int)args.Value;
+        LoanPrincipleAmount = Calculation.PrincipalAmount;
+        RefreshUI();
+    }
+
+    ///<summary>
+    ///Function hits when Principal value is changed in the slider by user and Refreshes the UI
+    ///</summary>
+
+    public async Task OnChangeOfPrincipal(Syncfusion.Blazor.Inputs.SliderChangeEventArgs<double> args)
+    {
+        DestroyComponents();
+        Calculation.PrincipalAmount = (int)args.Value;
+        LoanPrincipleAmount = Calculation.PrincipalAmount;
+        await this.PrincipalValueChanged.InvokeAsync((int)Calculation.PrincipalAmount);
+        RefreshUI();
+    }
+
+    ///<summary>
+    ///Function hits when interest input text changed by user
+    ///</summary>
+
+    public void OnInterestTextChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<double> args)
+    {
+        Calculation.Interest = (double)args.Value;
+        DestroyComponents();
+        RefreshUI();
+    }
+
+    ///<summary>
+    ///Function hits when LoanTenure input text changed by user
+    ///</summary>
+
+    public void OnLoanTenureTextChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<int> args)
+    {
+        Calculation.LoanTermValue = args.Value;
+        DestroyComponents();
+        RefreshUI();
+    }
+
+    ///<summary>
+    ///Function hits when Interest value is changed in the slider by user,it refresh the UI
+    ///</summary>
+
+    public async Task OnChangeOfInterest(Syncfusion.Blazor.Inputs.SliderChangeEventArgs<double> args)
+    {
+        DestroyComponents();
+        Calculation.Interest = args.Value;
+        await this.InterestValueChanged.InvokeAsync(Calculation.Interest);
+        RefreshUI();
+
+    }
+
+    ///<summary>
+    ///Function hits when Dropdown item is changed
+    ///</summary>
+
+    public async Task OnDropdownButtonChange(MenuEventArgs args)
+    {
+        if (!args.Item.Text.Equals(oldTenure))
+        {
+            Calculation.LoanTermValue = args.Item.Text.Equals("Month") ? Calculation.LoanTermValue * 12 : Calculation.LoanTermValue / 12;
+            NumericBox = args.Item.Text.Equals("Month") ? new int[] { 0, 480, 12 } : new int[] { 0, 40, 1 };
+            oldTenure = args.Item.Text;
+        }
+        GridObj.Tenure = args.Item.Text;
+        grid.CheckedValue = args.Item.Text;
+        DestroyComponents();
+        RefreshUI();
+    }
+
+    ///<summary>
+    ///Function hits when loan term input text changed by user and Refreshes the UI
+    ///</summary>
+
+    public void OnLoanTextChange(Syncfusion.Blazor.Inputs.ChangeEventArgs<int> args)
+    {
+        Calculation.LoanTermValue = (int)args.Value;
+        DestroyComponents();
+        RefreshUI();
+    }
+
+    ///<summary>
+    /// After Loan Term value is changed in the slider it refresh the UI
+    ///</summary>
+
+    public async Task OnTermValueChanged(Syncfusion.Blazor.Inputs.SliderChangeEventArgs<int> args)
+    {
+        DestroyComponents();
+        Calculation.LoanTermValue = args.Value;
+        await this.LoanTermValueChanged.InvokeAsync(Calculation.LoanTermValue);
+        RefreshUI();
+    }
+
+    ///<summary>
+    /// After Loan Term is changed to month in the slider it refresh the UI
+    ///</summary>
+
+    public async Task OnMonthTermChanged(Syncfusion.Blazor.Inputs.SliderChangeEventArgs<int> args)
+    {
+        DestroyComponents();
+        Calculation.LoanTermValue = args.Value;
+        await this.LoanTermValueChanged.InvokeAsync(Calculation.LoanTermValue);
+        RefreshUI();
+    }
+
+    ///<summary>
+    /// After Date value is changed in the datePicker component it refresh the UI
+    ///</summary>
+
+    public void OnDateValueChange(Syncfusion.Blazor.Calendars.ChangedEventArgs<DateTime> args)
+    {
+        calculator.DateValue = args.Value;
+        DestroyComponents();
+        AmortizationSchedule.DateObj = calculator.DateValue;
+        RefreshUI();
+    }
+
+    ///<summary>
+    /// this method dynamically add the values to render the pie-chart
+    ///</summary>
+
+    public void ChartComponent()
+    {
+        var interestPercentage = Math.Round(AmortizationSchedule.InterestRate) * 100 / (Calculation.PrincipalAmount + Math.Round(AmortizationSchedule.InterestRate));
+        interestPercentage = double.IsNaN(interestPercentage) ? 0 :  Math.Round(interestPercentage);
+        var pricipalPercentage = Math.Round(Calculation.PrincipalAmount) * 100 / (Calculation.PrincipalAmount + Math.Round(AmortizationSchedule.InterestRate));
+        pricipalPercentage = double.IsNaN(pricipalPercentage) ? 0 :  Math.Round(pricipalPercentage);
+        AmortizationChart.ChartData.Add(
+        new AmortizationChart()
+            {
+                XValue = Calculation.PrincipalAmount,
+                YValue = Calculation.PrincipalAmount,
+                Percentage = pricipalPercentage,
+            });
+        AmortizationChart.ChartData.Add(
+        new AmortizationChart()
+            {
+                XValue = AmortizationSchedule.InterestRate,
+                YValue = AmortizationSchedule.InterestRate,
+                Percentage = interestPercentage,
+            });
+
+    }
+
+
+    ///<summary>
+    /// this event destroys the previous data when onchange event is triggered in input Text,Slider,DatePicker
+    ///</summary>
+
+    public void DestroyComponents()
+    {
+        AmortizationSchedule.YearWiseData.Clear();
+        AmortizationSchedule.GridData.Clear();
+        AmortizationChart.ChartData.Clear();
+        AmortizationSchedule.DateObj = DateTime.Today;
+        PieChart?.Refresh();
+    }
+
+    ///<summary>
+    /// this event calculates the values after onchange is triggered and refresh the UI
+    ///</summary>
+
+    public void RefreshUI()
+    {
+        GridObj?.CalculateValues();
+        ChartComponent();
+        GridObj?.Refresh();
+        PieChart?.Refresh();
+        Refresh();
+    }
+    ///<summary>
+    /// this event triggers when chart resizes
+    ///</summary>
+    void ChartResize(ResizeEventArgs args)
+    {
+        Width = Convert.ToInt32(args.CurrentSize.Width);
+    }
+
+    ///<summary>
+    /// this event customizes the tick label in Input Text Box
+    ///</summary>
+
+    public void OnRenderingTickLabel(SliderTickEventArgs args)
+    {
+        if (args.Value == 0)
+        {
+            args.Text = "0";
+        }
+        else
+        {
+            int SliderValues = (int)args.Value / 1000;
+            args.Text = SliderValues + "K";
+        }
+
+    }
+    ///<summary>
+    /// this event triggers when this page is initialized
+    ///</summary>
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoanPrincipleAmount = Calculation.PrincipalAmount;
+        AmortizationSchedule.DateObj = DateTime.Now;
+    }
+    /// <summary>
+    /// This event list used to customize the Axis Labels in the Chart
+    /// </summary>
+    /// <param name="args"></param>
+    public void PaymentGraphAxisLabelRender(AxisLabelRenderEventArgs args)
+    {
+        if (Width != 0 && Width < 576)
+        {
+            if (args.Axis.Name == "PrimaryYAxis" || args.Axis.Name == "yAxis")
+            {
+                var value = (int)args.Value / 1000;
+                if (args.Value == 0)
+                {
+                    args.Text = "0";
+                }
+                else
+                {
+                    args.Text = value + "K";
+                }
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            GridObj?.CalculateValues();
+            ChartComponent();
+            await IJSRuntime.InvokeAsync<object>("addResizeListener", DotNetObjectReference.Create(this));
+            viewportWidth = await IJSRuntime.InvokeAsync<int>("getViewportWidth");
+            if(viewportWidth < 450)
+            {
+                yearButton.IsPrimary = true;
+            }
+            StateHasChanged();
+        }
+    }
+
+    [JSInvokable]
+    public void OnWindowResized(int BrowserWidth)
+    {
+        viewportWidth = BrowserWidth;
+        if (viewportWidth < 450)
+        {
+            yearButton.IsPrimary = true;
+        }
+        else
+        {
+            yearButton.IsPrimary = false;
+        }
+        StateHasChanged();
+
+    }
+
+    void IDisposable.Dispose()
+    {
+        AmortizationSchedule.DateObj = DateTime.Now;
+        AmortizationSchedule.YearWiseData.Clear();
+        AmortizationSchedule.GridData.Clear();
+        GridObj = null;
+    } 
+}

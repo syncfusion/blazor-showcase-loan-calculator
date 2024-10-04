@@ -1,0 +1,240 @@
+﻿@using LoanCalculator.Models;
+@using Syncfusion.Blazor.Data;
+@inject IJSRuntime IJSRuntime;
+@implements IDisposable
+
+<SfGrid Width="100%" TValue="AmortizationSchedule" DataSource="AmortizationSchedule.YearWiseData" @ref="GridObj1" AllowSelection="false">
+    <GridEditSettings AllowEditing="false"></GridEditSettings>
+    <GridTemplates>
+        <DetailTemplate Context="YearData">
+            @{
+                var data = (YearData as AmortizationSchedule);
+                <div class="ChildGrid">
+                    <SfGrid DataSource="@AmortizationSchedule.GridData" Query=@GridQuery(data) Width="100%" EnableHover="false" AllowSelection="false">
+                        <GridColumns>
+                            <GridColumn Field="@nameof(AmortizationSchedule.MonthName)" HeaderText="Month" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="@columWidth" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center">
+
+                            </GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.emi)" HeaderText="Payment" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.PrincipalPaid)" HeaderText="Principal Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.MonthlyInterest)" HeaderText="Interest Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.RemainingBalance)" HeaderText="Balance" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                </div>
+            }
+        </DetailTemplate>
+    </GridTemplates>
+    <GridEvents TValue="AmortizationSchedule" RowDataBound="RowBound"></GridEvents>
+    <GridColumns>
+        <GridColumn HeaderText="Year" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="60px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center">
+            <Template>
+                @{
+                    var list = (context as AmortizationSchedule);
+                    <span>@list!.Year</span>
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn Field="@nameof(AmortizationSchedule.TotalAmount)" HeaderText="Payment" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
+        <GridColumn Field="@nameof(AmortizationSchedule.TotalPrincipal)" HeaderText="Principal Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
+        <GridColumn Field="@nameof(AmortizationSchedule.TotalInterest)" HeaderText="Interest Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
+        <GridColumn Field="@nameof(AmortizationSchedule.RemainingBalance)" HeaderText="Balance" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
+    </GridColumns>
+</SfGrid>
+
+
+<style>
+    body.light .e-grid .e-attr4{
+        background-color: #F3F4F6;
+    }
+
+    .e-grid.e-resize-lines .e-headercell .e-rhandler{
+        border-right:none;
+    }
+
+    body .e-grid .e-focused:not(.e-menu-item) {
+        box-shadow: none;
+    }
+</style>
+
+@code {
+    public string columWidth { get; set; }="60";
+
+
+    private int viewPortWidth;
+
+    AmortizationSchedule GridObject = new AmortizationSchedule();
+
+    public SfGrid<AmortizationSchedule>? GridObj1 = new SfGrid<AmortizationSchedule>();
+
+    public int Count { get; set; } = 1;
+
+    public Query QueryData { get; set; } = new Query();
+
+    public string Tenure { get; set; } = "Year";
+
+    ///<summary>
+    /// this filters data in month wise in relative with corresponding year
+    ///</summary>
+    public Query GridQuery(AmortizationSchedule? value)
+    {
+        return new Query().Where("Year", "equal", value!.Year);
+    }
+
+    ///<summary>
+    /// this event styles the Grid columns with custom css
+    ///</summary>
+
+    public void RowBound(RowDataBoundEventArgs<AmortizationSchedule> args)
+    {
+        if (Count > 14)
+        {
+            Count = 1;
+        }
+        if (Count % 2 == 0)
+        {
+            args.Row.AddClass(new string[] { "EvenRow" });
+        }
+        else
+        {
+            args.Row.AddClass(new string[] { "OddRow" });
+        }
+        Count++;
+    }
+
+    ///<summary>
+    /// this function refreshes the grid when input changes
+    ///</summary>
+
+    public void Refresh()
+    {
+        GridObj1.Refresh();
+    }
+
+    ///<summary>
+    /// which calculates the monthly emi and Total Interest
+    ///</summary>
+    public void SetInitialValues()
+    {
+        AmortizationSchedule.EMI = calculateEMI();
+        AmortizationSchedule.MonthlyPayment = AmortizationSchedule.EMI * GridObject.tent;
+        AmortizationSchedule.InterestRate = AmortizationSchedule.MonthlyPayment - (int)Calculation.PrincipalAmount;
+    }
+
+    ///<summary>
+    /// which calculates the emi
+    ///</summary>
+    public double calculateEMI()
+    {
+        AmortizationSchedule.InterestValue = getInterest();
+        GridObject.tent = 0;
+        if (Tenure == "Year")
+        {
+            GridObject.tent = Calculation.LoanTermValue * 12;
+        }
+        if (Tenure == "Month")
+        {
+            GridObject.tent = Calculation.LoanTermValue ;
+        }
+        if (AmortizationSchedule.InterestValue != 0)
+        {
+            return (double)Calculation.PrincipalAmount * AmortizationSchedule.InterestValue * (Math.Pow((1 + AmortizationSchedule.InterestValue), GridObject.tent)) / ((Math.Pow((1 + AmortizationSchedule.InterestValue), GridObject.tent)) - 1);
+        }
+        return (double)Calculation.PrincipalAmount / GridObject.tent;
+    }
+
+    ///<summary>
+    /// which calculates the InterestValue
+    ///</summary>
+    public static double getInterest()
+    {
+        AmortizationSchedule.InterestValue = Calculation.Interest / 12 / 100;
+        return AmortizationSchedule.InterestValue;
+    }
+
+    ///<summary>
+    /// which calculates the principal,interest,emi throughout the year
+    ///</summary>
+    public void CalculateValues()
+    {
+        SetInitialValues();
+        getInterest();
+        GridObject.Principal = Calculation.PrincipalAmount;
+        AmortizationSchedule.InterestValue = AmortizationSchedule.InterestValue;
+        Calculation.Interest = Calculation.Interest;
+        for (var i = 0; i < GridObject.tent; i++)
+        {
+            AmortizationSchedule.GridData.Add(
+                new AmortizationSchedule()
+                {
+                    emi = Math.Round(AmortizationSchedule.EMI,2),
+                    MonthlyInterest = GridObject.Principal * AmortizationSchedule.InterestValue,
+                    PrincipalPaid = Math.Round(AmortizationSchedule.EMI - (GridObject.Principal * AmortizationSchedule.InterestValue),2),
+                    RemainingBalance = Math.Abs(GridObject.Principal - (AmortizationSchedule.EMI - (GridObject.Principal * AmortizationSchedule.InterestValue))),
+                    Year = AmortizationSchedule.DateObj.Year,
+                    MonthName = GridObject.monthNames[AmortizationSchedule.DateObj.Month - 1],
+                    Month = AmortizationSchedule.DateObj.Month - 1,
+                });
+            if (i == 0 || AmortizationSchedule.DateObj.Month == 0)
+            {
+                AmortizationSchedule.GridData[i].BeginBalance = AmortizationSchedule.GridData[0].RemainingBalance;
+                AmortizationSchedule.GridData[i].TotalInterest = GridObject.TotalInterest + AmortizationSchedule.GridData[i].MonthlyInterest;
+                AmortizationSchedule.GridData[i].TotalPrincipal =GridObject.TotalPrincipal + AmortizationSchedule.GridData[i].PrincipalPaid;
+                AmortizationSchedule.GridData[i].TotalAmount = GridObject.TotalAmount + AmortizationSchedule.GridData[i].emi;
+
+            }
+            if (i > 0)
+            {
+
+                AmortizationSchedule.GridData[i].TotalInterest = AmortizationSchedule.GridData[i - 1].TotalInterest + AmortizationSchedule.GridData[i].MonthlyInterest;
+                AmortizationSchedule.GridData[i].TotalPrincipal = AmortizationSchedule.GridData[i - 1].TotalPrincipal + AmortizationSchedule.GridData[i].PrincipalPaid;
+                AmortizationSchedule.GridData[i].TotalAmount = AmortizationSchedule.GridData[i - 1].TotalAmount + AmortizationSchedule.GridData[i].emi;
+            }
+            if (AmortizationSchedule.GridData[i].Month == 11 || i == GridObject.tent - 1)
+            {
+
+                AmortizationSchedule.YearWiseData.Add(new AmortizationSchedule()
+                {
+                    TotalInterest = Math.Round(AmortizationSchedule.GridData[i].TotalInterest),
+                    TotalPrincipal = Math.Round(AmortizationSchedule.GridData[i].TotalPrincipal),
+                    TotalAmount = Math.Round(AmortizationSchedule.GridData[i].TotalAmount),
+                    RemainingBalance = Math.Round(Math.Abs(AmortizationSchedule.GridData[i].RemainingBalance)),
+                    Year = AmortizationSchedule.DateObj.Year,
+                    YearN = AmortizationSchedule.DateObj,
+
+                });
+                AmortizationSchedule.GridData[i].TotalAmount = 0;
+                AmortizationSchedule.GridData[i].TotalInterest = 0;
+                AmortizationSchedule.GridData[i].TotalPrincipal = 0;
+            }
+            if (i < GridObject.tent - 1)
+            {
+                AmortizationSchedule.DateObj = AmortizationSchedule.DateObj.AddMonths(1);
+                GridObject.Principal = AmortizationSchedule.GridData[i].RemainingBalance;
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            viewPortWidth= await IJSRuntime.InvokeAsync<int>("getViewportWidth");
+            if (viewPortWidth < 450)
+            {
+                columWidth = "40";
+                StateHasChanged();
+            }
+        }
+
+    }
+
+    void IDisposable.Dispose()
+    {
+        AmortizationSchedule.GridData.Clear();
+        AmortizationSchedule.DateObj = DateTime.Now;
+        AmortizationSchedule.YearWiseData.Clear();
+        GridObj1?.Dispose();
+        GridObj1 = null;
+    }
+}

@@ -1,44 +1,48 @@
 ﻿@using LoanCalculator.Models;
 @using Syncfusion.Blazor.Data;
 @inject IJSRuntime IJSRuntime;
-<SfGrid Width="100%"  TValue="AmortizationSchedule" DataSource="AmortizationSchedule.YearWiseData" @ref="GridObj1" AllowSelection="false">
+@implements IDisposable
+
+<SfGrid Width="100%" TValue="AmortizationSchedule" DataSource="AmortizationSchedule.YearWiseData" @ref="GridObj1" AllowSelection="false">
     <GridEditSettings AllowEditing="false"></GridEditSettings>
-    <GridTemplates >
-        <DetailTemplate  Context="YearData">
+    <GridTemplates>
+        <DetailTemplate Context="YearData">
             @{
                 var data = (YearData as AmortizationSchedule);
-                    <div class="ChildGrid">
+                <div class="ChildGrid">
                     <SfGrid DataSource="@AmortizationSchedule.GridData" Query=@GridQuery(data) Width="100%" EnableHover="false" AllowSelection="false">
-                            <GridColumns>
-                                <GridColumn Field="@nameof(AmortizationSchedule.MonthName)" HeaderText="Month" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="@columWidth" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center">
+                        <GridColumns>
+                            <GridColumn Field="@nameof(AmortizationSchedule.MonthName)" HeaderText="Month" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="@columWidth" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center">
 
-                                </GridColumn>
-                                <GridColumn Field="@nameof(AmortizationSchedule.emi)" HeaderText="Payment"CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2" ></GridColumn>
-                                <GridColumn Field="@nameof(AmortizationSchedule.PrincipalPaid)" HeaderText="Principal Paid"  CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})"Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
-                                <GridColumn Field="@nameof(AmortizationSchedule.MonthlyInterest)" HeaderText="Interest Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})"Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
-                                <GridColumn Field="@nameof(AmortizationSchedule.RemainingBalance)" HeaderText="Balance"CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
-                            </GridColumns>
-                        </SfGrid>
-                    </div>
+                            </GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.emi)" HeaderText="Payment" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.PrincipalPaid)" HeaderText="Principal Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.MonthlyInterest)" HeaderText="Interest Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                            <GridColumn Field="@nameof(AmortizationSchedule.RemainingBalance)" HeaderText="Balance" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr4" }})" Width="80px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C2"></GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                </div>
             }
         </DetailTemplate>
     </GridTemplates>
     <GridEvents TValue="AmortizationSchedule" RowDataBound="RowBound"></GridEvents>
     <GridColumns>
-        <GridColumn HeaderText="Year"CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="60px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center">
+        <GridColumn HeaderText="Year" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="60px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center">
             <Template>
                 @{
                     var list = (context as AmortizationSchedule);
-                        <span>@list!.Year</span>
+                    <span>@list!.Year</span>
                 }
             </Template>
         </GridColumn>
-        <GridColumn Field="@nameof(AmortizationSchedule.TotalAmount)" HeaderText="Payment"CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})"  Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0" ></GridColumn>
-        <GridColumn Field="@nameof(AmortizationSchedule.TotalPrincipal)" HeaderText="Principal Paid"  CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
+        <GridColumn Field="@nameof(AmortizationSchedule.TotalAmount)" HeaderText="Payment" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
+        <GridColumn Field="@nameof(AmortizationSchedule.TotalPrincipal)" HeaderText="Principal Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
         <GridColumn Field="@nameof(AmortizationSchedule.TotalInterest)" HeaderText="Interest Paid" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
         <GridColumn Field="@nameof(AmortizationSchedule.RemainingBalance)" HeaderText="Balance" CustomAttributes="@(new Dictionary<string, object>(){ { "class", "e-attr" }})" Width="120px" TextAlign="@Syncfusion.Blazor.Grids.TextAlign.Center" Format="C0"></GridColumn>
     </GridColumns>
 </SfGrid>
+
+
 <style>
     body.light .e-grid .e-attr4{
         background-color: #F3F4F6;
@@ -223,5 +227,14 @@
             }
         }
 
+    }
+
+    void IDisposable.Dispose()
+    {
+        AmortizationSchedule.GridData.Clear();
+        AmortizationSchedule.DateObj = DateTime.Now;
+        AmortizationSchedule.YearWiseData.Clear();
+        GridObj1?.Dispose();
+        GridObj1 = null;
     }
 }

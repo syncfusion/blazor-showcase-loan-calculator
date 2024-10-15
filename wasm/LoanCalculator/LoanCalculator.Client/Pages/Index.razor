@@ -3,7 +3,9 @@
 @using Syncfusion.Blazor.SplitButtons;
 @using Syncfusion.Blazor.Buttons;
 @using LoanCalculator.Models;
-@using LoanCalculator.Shared;
+@using LoanCalculator.Client.Shared;
+@implements IDisposable
+
 @inject IJSRuntime IJSRuntime
 <div class="body-content">
     @if (themeSwitched)
@@ -226,8 +228,11 @@
                 </div>
                 @* Sf-Grid*@
                 <div class="chart">
-                    
-                    <DataGridComponent @ref="GridObj"></DataGridComponent>
+                    @if (AmortizationSchedule.YearWiseData.Count > 0 && AmortizationSchedule.GridData.Count > 0)
+                    {
+                        <DataGridComponent @ref="GridObj"></DataGridComponent>
+                    }
+
                 </div>
             </div>
         </div>
@@ -640,12 +645,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         LoanPrincipleAmount = Calculation.PrincipalAmount;
-        GridObj?.CalculateValues();
-        ChartComponent();
-   
-
+        AmortizationSchedule.DateObj = DateTime.Now;
     }
     /// <summary>
     /// This event list used to customize the Axis Labels in the Chart
@@ -674,6 +675,8 @@
     {
         if (firstRender)
         {
+            GridObj?.CalculateValues();
+            ChartComponent();
             await IJSRuntime.InvokeAsync<object>("addResizeListener", DotNetObjectReference.Create(this));
             viewportWidth = await IJSRuntime.InvokeAsync<int>("getViewportWidth");
             if(viewportWidth < 450)
@@ -699,4 +702,12 @@
         StateHasChanged();
 
     }
+
+    void IDisposable.Dispose()
+    {
+        AmortizationSchedule.DateObj = DateTime.Now;
+        AmortizationSchedule.YearWiseData.Clear();
+        AmortizationSchedule.GridData.Clear();
+        GridObj = null;
+    } 
 }

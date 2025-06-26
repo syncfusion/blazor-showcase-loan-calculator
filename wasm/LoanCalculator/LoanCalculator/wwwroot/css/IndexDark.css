@@ -109,7 +109,7 @@ body.light .loan-dropdown {
 .tenure-dropdown {
     display:flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .tenure-box.e-input-group.e-control-wrapper {

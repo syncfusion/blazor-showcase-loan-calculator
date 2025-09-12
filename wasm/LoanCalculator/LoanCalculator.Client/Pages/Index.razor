@@ -87,7 +87,7 @@
                         </div>
 
                         <SfSlider TValue=double Min="0" Max="500000" Type="SliderType.MinRange" @bind-Value="@Calculation.PrincipalAmount" Step="10000">
-                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
+                                <SliderLimits Enabled="true" MinStart="1" MinEnd="500000"></SliderLimits>
                             <SliderEvents TValue=double ValueChange="@OnChangeOfPrincipal" TicksRendering=@OnRenderingTickLabel></SliderEvents>
                             <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="100000" SmallStep="10000"></SliderTicks>
                             <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always" Format="C2"></SliderTooltip>
@@ -105,7 +105,7 @@
                         </div>
                         </div>
                         <SfSlider TValue=double Min="0" Max="50" Type="SliderType.MinRange" @bind-Value=@Calculation.Interest Step="0.25">
-                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
+                                <SliderLimits Enabled="true" MinStart="1" MinEnd="50"></SliderLimits>
                             <SliderEvents TValue=double ValueChange="@OnChangeOfInterest"></SliderEvents>
                             <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="10" SmallStep="1"></SliderTicks>
                                 <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
@@ -150,7 +150,7 @@
                         @if (grid.CheckedValue == "Year")
                         {
                             <SfSlider TValue=int Min="0" Max="40" Value="@Calculation.LoanTermValue" Type="SliderType.MinRange" Step="1" >
-                                <SliderLimits Enabled="true" MinStart="1"></SliderLimits>
+                                <SliderLimits Enabled="true" MinStart="1" MinEnd="40"></SliderLimits>
                                 <SliderEvents TValue=int  ValueChange="@OnTermValueChanged"></SliderEvents>
                                 <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="10" SmallStep="1"></SliderTicks>
                                   <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
@@ -159,7 +159,7 @@
                         else
                         {
                             <SfSlider TValue=int Min="0" Max="480" @bind-Value="@Calculation.LoanTermValue" Type="SliderType.MinRange" Step="12">
-                                <SliderLimits Enabled="true" MinStart="12"></SliderLimits>
+                                <SliderLimits Enabled="true" MinStart="12" MinEnd="480"></SliderLimits>
                                 <SliderEvents TValue=int ValueChange="@OnMonthTermChanged"></SliderEvents>
                                 <SliderTicks Placement="Placement.After" ShowSmallTicks="false" LargeStep="120" SmallStep="12"></SliderTicks>
                                 <SliderTooltip Placement="TooltipPlacement.Before" IsVisible="true" ShowOn="TooltipShowOn.Always"></SliderTooltip>
@@ -647,6 +647,8 @@
     {
         LoanPrincipleAmount = Calculation.PrincipalAmount;
         AmortizationSchedule.DateObj = DateTime.Now;
+        GridObj?.CalculateValues();
+        ChartComponent();
     }
     /// <summary>
     /// This event list used to customize the Axis Labels in the Chart
@@ -675,8 +677,6 @@
     {
         if (firstRender)
         {
-            GridObj?.CalculateValues();
-            ChartComponent();
             await IJSRuntime.InvokeAsync<object>("addResizeListener", DotNetObjectReference.Create(this));
             viewportWidth = await IJSRuntime.InvokeAsync<int>("getViewportWidth");
             if(viewportWidth < 450)

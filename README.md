@@ -13,7 +13,7 @@ The [Syncfusion Blazor Loan Calculator](https://blazor.syncfusion.com/showcase/w
 ## How to run the demo
 
 Clone the repository.This repository contains Blazor Loan Calculator WASM app.
-* `Wasm` folder has solution and project files to run Loan Calculator WebAssembly app.
+* `wasm` folder has solution and project files to run Loan Calculator WebAssembly app.
 
 ### Run the demo using .NET CLI
 

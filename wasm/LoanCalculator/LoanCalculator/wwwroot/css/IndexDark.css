@@ -85,9 +85,9 @@ body.light #loan-calculator {
 }
 
 .theme-switching {
-    position: absolute;
-    top: 0.62em;
-    right: 1em;
+    margin-left: auto;
+    margin-top: 0.62em;
+    margin-right: 1em;
 }
 
 .loan-dropdown {

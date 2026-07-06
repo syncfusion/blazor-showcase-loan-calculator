@@ -103,7 +103,7 @@
         function ChangeStyleSheet() {
             const body = document.getElementsByTagName('body');
             const link = document.getElementById('theme-link');
-            const styleSheet = body[0].className == "light" ? 'tailwind' : 'tailwind-dark';
+        const styleSheet = body[0].className == "light" ? 'fluent2' : 'fluent2-dark';
             link.setAttribute('href', `_content/Syncfusion.Blazor.Themes/${styleSheet}.css`);
         }
 

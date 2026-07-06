@@ -12,13 +12,13 @@
     <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
 	<PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
-	<PackageReference Include="Syncfusion.Blazor.Buttons" Version="33.1.44" />
-	<PackageReference Include="Syncfusion.Blazor.Calendars" Version="33.1.44" />
-	<PackageReference Include="Syncfusion.Blazor.Charts" Version="33.1.44" />
-	<PackageReference Include="Syncfusion.Blazor.Core" Version="33.1.44" />
-	<PackageReference Include="Syncfusion.Blazor.Grid" Version="33.1.44" />
-	<PackageReference Include="Syncfusion.Blazor.Inputs" Version="33.1.44" />
-	<PackageReference Include="Syncfusion.Blazor.Themes" Version="33.1.44" />
+	<PackageReference Include="Syncfusion.Blazor.Buttons" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Calendars" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Charts" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Core" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Grid" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Inputs" Version="34.1.29" />
+	<PackageReference Include="Syncfusion.Blazor.Themes" Version="34.1.29" />
   </ItemGroup>
 
   <ItemGroup>

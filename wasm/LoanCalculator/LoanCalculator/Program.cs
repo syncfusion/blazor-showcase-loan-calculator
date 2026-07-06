@@ -2,7 +2,6 @@ using Blazored.LocalStorage;
 using LoanCalculator.Client.Pages;
 using LoanCalculator.Components;
 using Syncfusion.Blazor;
-using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 

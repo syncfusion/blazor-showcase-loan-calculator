@@ -1,24 +1,61 @@
 ﻿@inject NavigationManager Urihelper
+
+@* SEO Variables - Single source of truth for all meta tags *@
+@{
+    string SeoTitle = "Loan Calculator - Syncfusion Blazor Showcase";
+    string SeoDescription = "Real-world loan calculation application demonstrating practical Syncfusion Blazor component integration.";
+    string SiteUrl = Urihelper.Uri.TrimEnd('/');
+    string ApplicationName = "Loan Calculator";
+    string Publisher = "Syncfusion";
+    string Language = "English";
+    string SocialImage = SiteUrl + "/LoanCalculator.svg";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,  maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="Syncfusion Blazor Loan Calculator - Easily calculate loan payments, interest rates, and amortization schedules.">
-    <meta name="keywords" content="blazor loancalculator, syncfusion loancalculator, wasm loancalculator, loan-calculator, online loan-calculator, online loancalculator, loancalculator">
-    <meta name="author" content="Syncfusion">
-    <title>Syncfusion Blazor Loan Calculator | Payments and Interest</title>
-    <base href="/" />
-    <meta property="og:title" content="Syncfusion Blazor Loan Calculator | Payments and Interest" />
-    <meta property="og:description" content="Syncfusion Blazor Loan Calculator - Easily calculate loan payments, interest rates, and amortization schedules." />
-    <meta property="og:url" content="https://showcase.syncfusion.com/loan-calculator/blazor/wasm/#/dashboard/" />
-    <meta property="og:image" content="@(Urihelper.BaseUri)LoanCalculator.svg" />
+    <!-- HTML Title -->
+    <title>@SeoTitle</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="@SeoTitle" />
+    <meta name="description" content="@SeoDescription" />
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="loan calculator, financial planning, mortgage, interest rates, calculations" />
+    <meta name="publisher" content="@Publisher" />
+    <meta name="language" content="@Language" />
+    
+    <!-- Canonical URL -->
+    <link href="https://showcase.syncfusion.com/loan-calculator/blazor/wasm/" rel="canonical" />
+    
+    <!-- Alternate Language Tags -->
+    <link rel="alternate" hreflang="en-US" href="@SiteUrl" />
+    <link rel="alternate" hreflang="x-default" href="@SiteUrl" />
+    
+    <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="@SeoTitle" />
+    <meta property="og:description" content="@SeoDescription" />
+    <meta property="og:url" content="@SiteUrl" />
+    <meta property="og:site_name" content="@ApplicationName" />
+    <meta property="og:image" content="@SocialImage" />
+    <meta property="og:image:alt" content="@ApplicationName Logo" />
+    <meta property="og:locale" content="en_US" />
+    
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <link href="https://showcase.syncfusion.com/loan-calculator/blazor/wasm/#/dashboard/" rel="canonical" />
+    <meta name="twitter:title" content="@SeoTitle" />
+    <meta name="twitter:description" content="@SeoDescription" />
+    <meta name="twitter:image" content="@SocialImage" />
+    <meta name="twitter:image:alt" content="@ApplicationName" />
+    <meta name="twitter:site" content="@@Syncfusion" />
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <base href="/" />
     <!-- Google Tag Manager -->
-    <!-- Load GTM-P3WXFWCW immediately on page load  -->
+    <!-- Load GTM-WXZ6DX9B immediately on page load  -->
     <script>
         (function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
@@ -27,7 +64,7 @@
             }); var f = d.getElementsByTagName(s)[0],
                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-P3WXFWCW');
+        })(window, document, 'script', 'dataLayer', 'GTM-WXZ6DX9B');
     </script>
     <!-- Load GTM-W8WD8WN on user interaction -->
     <script>
@@ -59,6 +96,33 @@
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+    
+    <!-- Schema.org Structured Data - SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org/",
+      "@@type": "SoftwareApplication",
+      "name": "@ApplicationName",
+      "description": "@SeoDescription",
+      "url": "@SiteUrl",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "browserRequirements": "WebAssembly enabled browser",
+      "image": "@SocialImage",
+      "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@@type": "Organization",
+        "name": "@Publisher",
+        "url": "https://www.syncfusion.com"
+      },
+      "inLanguage": "en-US"
+    }
+    </script>
+    
     <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
@@ -71,7 +135,7 @@
                 </svg>
             </div>
             <div class="loading-caption">
-                <p class="my-4" id="Loading-Text">Loading Loan Calculator...</p>
+                <h4 class="my-4" id="Loading-Text">Loading Loan Calculator...</h4>
             </div>
         </div>
     </div>
@@ -93,7 +157,7 @@
     <!-- Google Tag Manager (noscript) -->
     <!--Page Load-->
     <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P3WXFWCW" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXZ6DX9B" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
     <!--Interaction-->
     <noscript>
